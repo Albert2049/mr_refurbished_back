@@ -1,16 +1,10 @@
 const express = require('express');
-const { compare, encrypt } = require('../utils/handlePassword');
 const router = express.Router();
 const { validatorRegister, validatorLogin } = require('../validators/authValidator');
-const { matchedData } = require('express-validator');
+const { registerCtrl } = require('../controllers/authController');
 
 
-router.post('/register', validatorRegister, async (req, res)=>{
-    req = matchedData(req);
-    const passwordHash = await encrypt(req.password)
-    const body = {...req, password: passwordHash};
-    res.send({data:body});
-});
+router.post('/register', validatorRegister, registerCtrl);
 
 
 module.exports = router;
