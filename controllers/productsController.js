@@ -10,6 +10,7 @@ const { handleHttpError } = require('../utils/handleError');
  */
 const getItems = async (req, res)=>{
     try {
+        const user = req.user;
         const data = await productsModel.findAll({});
         res.send(data);
     } catch (error) {

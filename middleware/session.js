@@ -1,5 +1,7 @@
+const { usersModel } = require('../models/index');
 const { handleHttpError } = require('../utils/handleError');
 const { verifyToken } = require('../utils/handleJwt');
+
 
 const authMiddleware = async (req, res, next) => {
     try {
@@ -11,16 +13,20 @@ const authMiddleware = async (req, res, next) => {
 
         const token = req.headers.authorization.split(' ').pop();
         const dataToken =  await verifyToken(token);
+        const id = dataToken.id;
 
-        if(!dataToken.id){
+        if(!id){
             handleHttpError(res, "ERROR_NO_USER", 401);
             return
         }
 
+        const user = await usersModel.findOne({where: {id}});
+        req.user = user;
+        
         next();
 
     } catch (error) {
-        handleHttpError(res, "NO_SESSION", 401);
+        handleHttpError(res, "NOT_SESSION", 401);
     }
 }
 
